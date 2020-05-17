@@ -2,7 +2,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group 'lalalambda'
