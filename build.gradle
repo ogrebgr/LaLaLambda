@@ -1,15 +1,43 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm'
+}
+def kotlinPluginId = 'org.jetbrains.kotlin.jvm'
+final hasPlugin = project.getPlugins().hasPlugin(kotlinPluginId);
+if (hasPlugin) {
+    final Plugin plugin = project.getPlugins().getPlugin(kotlinPluginId)
+    println 'Plugin already applied - version ' + plugin.properties['kotlinPluginVersion']
+} else {
+    apply plugin: "org.jetbrains.kotlin.jvm"
 }
 
+
+apply plugin: 'com.jfrog.bintray'
+ext {
+    lalalambda_version = '1.0.0'
+}
+
+
 group 'lalalambda'
-version '1.0-SNAPSHOT'
+version lalalambda_version
 
 repositories {
     mavenCentral()
+    jcenter()
 }
+
 
 dependencies {
     api 'com.amazonaws:aws-lambda-java-core:1.2.0'
@@ -18,7 +46,7 @@ dependencies {
 
     implementation 'org.apache.logging.log4j:log4j-api:2.13.2'
     implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
-//    implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.2'
+    implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.2'
     runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -30,4 +58,48 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar//, javadocJar
+}
+
+apply from: 'bintray-config.gradle'
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId 'lalalambda'
+            artifactId 'LaLaLambda'
+            version lalalambda_version
+            artifact sourcesJar
+        }
+    }
+}
+
+
+bintray {
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'LaLaLambda'
+        userOrg = 'ogibankov'
+        licenses = ['Apache-2.0']
+        websiteUrl = 'https://github.com/ogrebgr/LaLaLambda'
+        issueTrackerUrl = 'https://github.com/ogrebgr/LaLaLambda/issues'
+        vcsUrl = 'git@github.com:ogrebgr/LaLaLambda.git'
+        version {
+            name = lalalambda_version
+            desc = 'La La Lambda'
+            vcsTag = 'v' + lalalambda_version
+        }
+    }
+    publications = ['MyPublication']
 }
