@@ -30,7 +30,7 @@ ext {
 }
 
 
-group 'ezlambda'
+group 'com.bolyartech.ezlambda'
 version ezlambda_version
 
 repositories {
@@ -80,7 +80,7 @@ publishing {
     publications {
         MyPublication(MavenPublication) {
             from components.java
-            groupId 'ezlambda'
+            groupId 'com.bolyartech.ezlambda'
             artifactId 'ezlambda'
             version ezlambda_version
             artifact sourcesJar
