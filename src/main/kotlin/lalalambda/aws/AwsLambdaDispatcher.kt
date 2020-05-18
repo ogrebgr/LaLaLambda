@@ -1,8 +1,9 @@
-package lalalambda.generic
+package lalalambda.aws
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent
+import lalalambda.generic.AbstractLambdaDispatcher
 import lalalambda.misc.HttpMethod
 
 
@@ -14,18 +15,20 @@ open class AwsLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
         context: Context
     ): APIGatewayV2ProxyResponseEvent {
 
-        val lambda = match(input.path, HttpMethod.fromString(input.httpMethod))
-        return if (lambda != null) {
+        val match = match(input.path, HttpMethod.fromString(input.httpMethod))
+        return if (match != null) {
             try {
-                lambda.handleRequest(AwsRequestData(input, context))
+                match.lambda.handleRequest(AwsRequestData(input, context))
             } catch (e: Exception) {
                 val ret = APIGatewayV2ProxyResponseEvent()
                 ret.statusCode = 500
+                ret.body = "500 Internal server error"
                 ret
             }
         } else {
             val ret = APIGatewayV2ProxyResponseEvent()
             ret.statusCode = 404
+            ret.body = "404 Not found"
             ret
         }
     }

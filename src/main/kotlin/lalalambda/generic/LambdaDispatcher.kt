@@ -37,7 +37,7 @@ abstract class AbstractLambdaDispatcher<T : GenericLambda<*, *>> constructor(pri
         map.put(path, lambda)
     }
 
-    protected fun match(path: String, method: HttpMethod): T? {
+    protected fun match(path: String, method: HttpMethod): MatchedLambda<T>? {
         return when (method) {
             HttpMethod.GET -> match(endpointsGet, path)
             HttpMethod.POST -> match(endpointsPost, path)
@@ -47,18 +47,21 @@ abstract class AbstractLambdaDispatcher<T : GenericLambda<*, *>> constructor(pri
     }
 
 
-    private fun match(map: Map<String, T>, path: String): T? {
+    private fun match(map: Map<String, T>, path: String): MatchedLambda<T>? {
         val pathCanon = if (path.startsWith("/")) {
             path.substring(1)
         } else {
             path
         }
-        return map.get(pathCanon)
-            ?: if (isPathInfoEnabled) {
+        val tmp = map[pathCanon]
+        return if (tmp != null) {
+            MatchedLambda(pathCanon, tmp)
+        } else {
+            if (isPathInfoEnabled) {
                 val count: Int = countSlashes(pathCanon)
                 // maxPathSegments prevents DDOS attacks with intentionally maliciously composed urls that contain multiple slashes like
                 // "/a/a/a/a/b/b/a/d/" in order to slow down the matching (because matching is rather expensive operation)
-                if (count >= 1 && count <= maxPathSegments) {
+                if (count in 1..maxPathSegments) {
                     match(map, removeLastPathSegment(pathCanon))
                 } else {
                     null
@@ -66,6 +69,7 @@ abstract class AbstractLambdaDispatcher<T : GenericLambda<*, *>> constructor(pri
             } else {
                 return null
             }
+        }
     }
 
     private fun countSlashes(str: String): Int {
@@ -80,3 +84,5 @@ abstract class AbstractLambdaDispatcher<T : GenericLambda<*, *>> constructor(pri
         }
     }
 }
+
+data class MatchedLambda<T : GenericLambda<*, *>>(val routePath: String, val lambda: T)
