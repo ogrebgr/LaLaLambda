@@ -27,12 +27,14 @@ open class SimpleLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
                 val ret = APIGatewayV2ProxyResponseEvent()
                 ret.statusCode = 500
                 ret.body = "500 Internal server error"
+                ret.headers = mapOf("Content-type" to "text/plain")
                 ret
             }
         } else {
             val ret = APIGatewayV2ProxyResponseEvent()
             ret.statusCode = 404
             ret.body = "404 Not found"
+            ret.headers = mapOf("Content-type" to "text/plain")
             ret
         }
     }
