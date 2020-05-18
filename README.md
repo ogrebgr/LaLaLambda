@@ -1,1 +1,1 @@
-# LaLaLambda
+# ezLambda

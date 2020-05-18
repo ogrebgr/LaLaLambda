@@ -1,4 +1,4 @@
-package lalalambda.aws
+package ezlambda.aws
 
 data class AwsRequestEvent(
     val resource: String,

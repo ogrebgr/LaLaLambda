@@ -26,12 +26,12 @@ if (hasPlugin) {
 
 apply plugin: 'com.jfrog.bintray'
 ext {
-    lalalambda_version = '1.0.0'
+    ezlambda_version = '1.0.0'
 }
 
 
-group 'lalalambda'
-version lalalambda_version
+group 'ezlambda'
+version ezlambda_version
 
 repositories {
     mavenCentral()
@@ -44,14 +44,18 @@ dependencies {
     api 'com.amazonaws:aws-lambda-java-events:2.2.7'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.2'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
-    implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.2'
-    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
+//    implementation 'org.apache.logging.log4j:log4j-api:2.13.2'
+//    implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
+//    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.2'
+//    runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    runtimeOnly 'org.jlib:jlib-awslambda-logback:1.0.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+sourceCompatibility = 1.8
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -76,9 +80,9 @@ publishing {
     publications {
         MyPublication(MavenPublication) {
             from components.java
-            groupId 'lalalambda'
-            artifactId 'LaLaLambda'
-            version lalalambda_version
+            groupId 'ezlambda'
+            artifactId 'ezlambda'
+            version ezlambda_version
             artifact sourcesJar
         }
     }
@@ -89,16 +93,16 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = 'maven'
-        name = 'LaLaLambda'
+        name = 'ezlambda'
         userOrg = 'ogibankov'
         licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/ogrebgr/LaLaLambda'
-        issueTrackerUrl = 'https://github.com/ogrebgr/LaLaLambda/issues'
-        vcsUrl = 'git@github.com:ogrebgr/LaLaLambda.git'
+        websiteUrl = 'https://github.com/ogrebgr/ezlambda'
+        issueTrackerUrl = 'https://github.com/ogrebgr/ezlambda/issues'
+        vcsUrl = 'git@github.com:ogrebgr/ezlambda.git'
         version {
-            name = lalalambda_version
-            desc = 'La La Lambda'
-            vcsTag = 'v' + lalalambda_version
+            name = ezlambda_version
+            desc = 'ezLambda'
+            vcsTag = 'v' + ezlambda_version
         }
     }
     publications = ['MyPublication']

@@ -1,4 +1,4 @@
-package lalalambda.misc
+package ezlambda.misc
 
 enum class HttpMethod(val literal: String) {
     GET("get"),

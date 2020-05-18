@@ -1,9 +1,9 @@
-package lalalambda.generic
+package ezlambda.generic
 
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent
-import lalalambda.misc.HttpMethod
+import ezlambda.misc.HttpMethod
 
 interface LambdaDispatcher<T : GenericLambda<*, *>> :
     RequestHandler<APIGatewayV2ProxyRequestEvent, APIGatewayV2ProxyResponseEvent> {

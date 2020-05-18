@@ -1,7 +1,7 @@
-package lalalambda.simple
+package ezlambda.simple
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent
-import lalalambda.misc.HttpMethod
+import ezlambda.misc.HttpMethod
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder

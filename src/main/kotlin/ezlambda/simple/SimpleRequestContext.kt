@@ -1,6 +1,6 @@
-package lalalambda.simple
+package ezlambda.simple
 
-import lalalambda.misc.HttpMethod
+import ezlambda.misc.HttpMethod
 
 interface SimpleRequestContext {
     /**

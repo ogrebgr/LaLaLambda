@@ -1,24 +1,32 @@
-package lalalambda.aws
+package ezlambda.simple
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent
-import lalalambda.generic.AbstractLambdaDispatcher
-import lalalambda.misc.HttpMethod
+import ezlambda.generic.AbstractLambdaDispatcher
+import ezlambda.misc.HttpMethod
+import org.slf4j.LoggerFactory
 
+open class SimpleLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
+    AbstractLambdaDispatcher<SimpleLambda>(isPathInfoEnabled) {
 
-open class AwsLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
-    AbstractLambdaDispatcher<AwsLambda>(isPathInfoEnabled) {
+    private val log = LoggerFactory.getLogger(SimpleLambdaDispatcher::class.java)
 
     override fun handleRequest(
         input: APIGatewayV2ProxyRequestEvent,
-        context: Context
+        context: Context?
     ): APIGatewayV2ProxyResponseEvent {
 
         val match = match(input.path, HttpMethod.fromString(input.httpMethod))
+
         return if (match != null) {
             try {
-                match.lambda.handleRequest(AwsRequestData(input, context))
+                val resp = match.lambda.handleRequest(SimpleRequestContextAws(input, match.routePath))
+                val ret = APIGatewayV2ProxyResponseEvent()
+                ret.statusCode = resp.statusCode
+                ret.headers = resp.headers
+                ret.body = resp.body
+                ret
             } catch (e: Exception) {
                 val ret = APIGatewayV2ProxyResponseEvent()
                 ret.statusCode = 500
@@ -34,4 +42,5 @@ open class AwsLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
             ret
         }
     }
+
 }

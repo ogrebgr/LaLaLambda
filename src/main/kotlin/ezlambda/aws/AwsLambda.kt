@@ -1,9 +1,9 @@
-package lalalambda.aws
+package ezlambda.aws
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent
-import lalalambda.generic.GenericLambda
+import ezlambda.generic.GenericLambda
 
 interface AwsLambda :
     GenericLambda<AwsRequestData, APIGatewayV2ProxyResponseEvent>

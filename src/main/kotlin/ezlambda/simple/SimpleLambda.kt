@@ -1,5 +1,5 @@
-package lalalambda.simple
+package ezlambda.simple
 
-import lalalambda.generic.GenericLambda
+import ezlambda.generic.GenericLambda
 
 interface SimpleLambda : GenericLambda<SimpleRequestContext, SimpleResponse>
