@@ -26,7 +26,7 @@ if (hasPlugin) {
 
 apply plugin: 'com.jfrog.bintray'
 ext {
-    ezlambda_version = '1.0.1'
+    ezlambda_version = '1.0.2'
 }
 
 
