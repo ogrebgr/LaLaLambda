@@ -5,14 +5,17 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyRequestEven
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2ProxyResponseEvent
 import ezlambda.generic.AbstractLambdaDispatcher
 import ezlambda.misc.HttpMethod
+import org.slf4j.LoggerFactory
 
 
 open class AwsLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
     AbstractLambdaDispatcher<AwsLambda>(isPathInfoEnabled) {
 
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+
     override fun handleRequest(
-        input: APIGatewayV2ProxyRequestEvent,
-        context: Context
+            input: APIGatewayV2ProxyRequestEvent,
+            context: Context
     ): APIGatewayV2ProxyResponseEvent {
 
         val match = match(input.path, HttpMethod.fromString(input.httpMethod))
@@ -24,6 +27,10 @@ open class AwsLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
                 ret.statusCode = 500
                 ret.body = "500 Internal server error"
                 ret.headers = mapOf("Content-type" to "text/plain")
+
+                logger.error("Error handling {}, Error: {}", match.routePath, e.message)
+                logger.error("Exception: ", e)
+
                 ret
             }
         } else {
