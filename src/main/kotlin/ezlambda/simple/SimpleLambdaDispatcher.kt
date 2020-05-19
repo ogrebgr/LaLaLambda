@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 open class SimpleLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
     AbstractLambdaDispatcher<SimpleLambda>(isPathInfoEnabled) {
 
-    private val log = LoggerFactory.getLogger(SimpleLambdaDispatcher::class.java)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun handleRequest(
         input: APIGatewayV2ProxyRequestEvent,
@@ -32,6 +32,10 @@ open class SimpleLambdaDispatcher constructor(isPathInfoEnabled: Boolean) :
                 ret.statusCode = 500
                 ret.body = "500 Internal server error"
                 ret.headers = mapOf("Content-type" to "text/plain")
+
+                logger.error("Error handling {}, Error: {}", match.routePath, e.message)
+                logger.error("Exception: ", e)
+
                 ret
             }
         } else {
