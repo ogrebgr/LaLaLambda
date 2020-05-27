@@ -22,6 +22,12 @@ class SimpleRequestContextAws(private val awsReq: APIGatewayV2ProxyRequestEvent,
     private var arePostParametersExtracted = false
     private var arePiParametersExtracted = false
 
+    private var _body: String? = null
+
+    init {
+        _body = awsReq.body
+    }
+
     override fun getFromGet(parameterName: String): String? {
         return getParams[parameterName]
     }
@@ -102,6 +108,10 @@ class SimpleRequestContextAws(private val awsReq: APIGatewayV2ProxyRequestEvent,
 
     override fun isMethod(method: HttpMethod): Boolean {
         return getMethod() == method
+    }
+
+    override fun getBody(): String? {
+        return _body
     }
 
     @Throws(IOException::class)

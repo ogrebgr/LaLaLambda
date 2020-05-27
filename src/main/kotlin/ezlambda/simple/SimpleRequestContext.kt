@@ -117,5 +117,13 @@ interface SimpleRequestContext {
      * @return true if the HTTP method matches the specified, false otherwise
      */
     fun isMethod(method: HttpMethod): Boolean
+
+
+    /**
+     * Return body of the request
+     *
+     * @return body of the request
+     */
+    fun getBody(): String?
 }
 
